@@ -33,15 +33,22 @@ class AuditlogMiddleware:
     @staticmethod
     def _get_actor(request):
         user = getattr(request, "user", None)
-        if isinstance(user, get_user_model()) and user.is_authenticated:
-            return user
-        return None
+        return user
+        # if isinstance(user, get_user_model()) and user.is_authenticated:
+        #     return user
+        # return None
+
+    @staticmethod
+    def _get_db_user(request):
+        db_user = getattr(request, "db_user", None)
+        return db_user
 
     def __call__(self, request):
         remote_addr = self._get_remote_addr(request)
         user = self._get_actor(request)
+        db_user = self._get_db_user(request)
 
         set_cid(request)
 
-        with set_actor(actor=user, remote_addr=remote_addr):
+        with set_actor(actor=user, remote_addr=remote_addr, db_user=db_user):
             return self.get_response(request)
