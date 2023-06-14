@@ -356,14 +356,8 @@ class LogEntry(models.Model):
         choices=Action.choices, verbose_name=_("action"), db_index=True
     )
     changes = models.JSONField(null=True, verbose_name=_("change message"))
-    actor = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name="+",
-        verbose_name=_("actor"),
-    )
+    actor = models.JSONField(null=True, blank=True)
+    db_user = models.CharField(max_length=50, null=True, blank=True)
     cid = models.CharField(
         max_length=255,
         db_index=True,
